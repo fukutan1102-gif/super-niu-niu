@@ -249,11 +249,11 @@ details.paytbl[open] summary { margin-bottom: 8px; }
     <div class="bank"><div class="lbl">BANKROLL</div><div class="v" id="bankV">₱45,000</div></div>
   </header>
   <nav class="tabs" role="tablist">
-    <button role="tab" id="tab-learn" data-tab="learn" aria-selected="false">入門</button>
     <button role="tab" id="tab-table" data-tab="table" aria-selected="true">卓</button>
     <button role="tab" id="tab-set" data-tab="set" aria-selected="false">役作り</button>
     <button role="tab" id="tab-pay" data-tab="pay" aria-selected="false">精算</button>
     <button role="tab" id="tab-rules" data-tab="rules" aria-selected="false">ルール</button>
+    <button role="tab" id="tab-settings" data-tab="settings" aria-selected="false">設定</button>
   </nav>
 
   <!-- TUTORIAL -->
@@ -312,6 +312,11 @@ details.paytbl[open] summary { margin-bottom: 8px; }
     <p class="lead">勝ちは自分の役、負けはディーラーの役で倍率が決まる。タックスとニウ6の半額を忘れずに。</p>
     <div id="pQ"></div>
     <div class="stats" id="pStats"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="view-settings" class="panel" hidden>
+    <div id="settingsBody"></div>
   </section>
 
   <!-- RULES -->
@@ -732,7 +737,7 @@ $('view-pay').addEventListener('click', ev => {
   if (Q.ans !== null) return;
   Q.ans = +t.dataset.p; const ok = Math.abs(Q.ans - Q.correct) < .01;
   S.ps.n++; if (ok) { S.ps.ok++; S.ps.streak++; } else S.ps.streak = 0; save(); renderPay();
-  const nb = document.querySelector('[data-p=next]'); if (nb) nb.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  const nb = document.querySelector('[data-p=next]'); if (nb) nb.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
 // ---------- RULES ----------
@@ -766,14 +771,6 @@ function renderRules() {
   <h2>オカダマニラについて</h2>
   <p>オカダの公式サイトには「Super Niu Niu Plus」として、他の客かディーラーの手が「3 Picture」になるかに賭けるサイドベット（最大150倍、₱100から）が載っている。このサイドベットの配当表は公開されていないので、本アプリには入れていない。基本の配当もカジノごとに少しずつ違う（例：SolaireはフォーカードのDOUBLEが5倍）。席に着く前に卓上の配当表で、ニウ6のEVENが半額か、DOUBLE・SUPERのタックス対象、卓ミニマムを確認すること。</p>
 
-  <h2>卓の設定</h2>
-  <div class="form">
-    <label for="setPreset">配当ルール<select id="setPreset">${Object.entries(NN.PRESETS).map(([k, v]) => `<option value="${k}" ${k === S.preset ? 'selected' : ''}>${v.name}</option>`).join('')}</select></label>
-    <label for="setMin">卓ミニマム（EVEN）<select id="setMin">${[300, 500, 1000, 2000].map(v => `<option value="${v}" ${v === S.tableMin ? 'selected' : ''}>${yen(v)}</option>`).join('')}</select></label>
-    <div class="actions" style="margin-top:0"><button type="button" class="btn" id="resetBank">資金を${yen(START_BANK)}に戻す</button><button type="button" class="btn" id="resetStats">成績をリセット</button></div>
-    <div class="msg" id="setMsg"></div>
-  </div>
-
   <h2>出典</h2>
   <ul class="note src">
     <li><a href="https://www.cityofdreamsmanila.com/sites/g/files/cityofdreamsmanila/files/2022-01/TableGames_GamingGuide_Super%20Niu%20Niu.pdf" target="_blank" rel="noopener">City of Dreams Manila · Super Niu Niu Rules and Guidelines</a></li>
@@ -782,7 +779,26 @@ function renderRules() {
     <li><a href="https://okadamanila.com/casino-game/super-niu-niu-plus/" target="_blank" rel="noopener">Okada Manila · Super Niu Niu Plus</a></li>
     <li><a href="https://wizardofodds.com/games/niu-niu/" target="_blank" rel="noopener">Wizard of Odds · Niu Niu</a></li>
   </ul>`;
-  $('setPreset').onchange = e => { S.preset = e.target.value; save(); renderRules(); if (phase === 'bet') renderTable(); };
+}
+
+// ---------- SETTINGS ----------
+function renderSettings() {
+  $('settingsBody').innerHTML = `
+  <h2>チュートリアル</h2>
+  <p class="lead">役の作り方から精算まで、手を動かしながら覚える11ステップ（約5分）。</p>
+  <div class="actions" style="margin-top:0"><button type="button" class="btn primary" id="startLearn">${S.learned ? 'もう一度見る' : 'チュートリアルを始める'}</button></div>
+
+  <h2>卓の設定</h2>
+  <div class="form">
+    <label for="setPreset">配当ルール<select id="setPreset">${Object.entries(NN.PRESETS).map(([k, v]) => `<option value="${k}" ${k === S.preset ? 'selected' : ''}>${v.name}</option>`).join('')}</select></label>
+    <label for="setMin">卓ミニマム（EVEN）<select id="setMin">${[300, 500, 1000, 2000].map(v => `<option value="${v}" ${v === S.tableMin ? 'selected' : ''}>${yen(v)}</option>`).join('')}</select></label>
+    <div class="actions" style="margin-top:0"><button type="button" class="btn" id="resetBank">資金を${yen(START_BANK)}に戻す</button><button type="button" class="btn" id="resetStats">成績をリセット</button></div>
+    <div class="msg" id="setMsg"></div>
+  </div>
+
+`;
+  $('startLearn').onclick = () => { L.i = 0; L.sel = []; L.solved = {}; L.ans = {}; show('learn'); };
+  $('setPreset').onchange = e => { S.preset = e.target.value; save(); renderSettings(); if (phase === 'bet') renderTable(); };
   $('setMin').onchange = e => { S.tableMin = +e.target.value; save(); renderTable(); };
   $('resetBank').onclick = () => { if (phase !== 'bet') { $('setMsg').textContent = 'ハンドの途中はリセットできない'; return; } S.bank = START_BANK; save(); renderTable(); $('setMsg').textContent = '資金を戻した'; };
   $('resetStats').onclick = () => { S.st = structuredClone(DEF.st); S.ds = structuredClone(DEF.ds); S.ps = structuredClone(DEF.ps); save(); renderTable(); $('setMsg').textContent = '成績をリセットした'; };
@@ -899,15 +915,17 @@ $('view-learn').addEventListener('click', ev => {
 
 // ---------- tabs ----------
 function show(tab) {
-  document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
-  ['learn', 'table', 'set', 'pay', 'rules'].forEach(t => $('view-' + t).hidden = t !== tab);
+  const navTab = tab === 'learn' ? 'settings' : tab;
+  document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === navTab));
+  ['learn', 'table', 'set', 'pay', 'rules', 'settings'].forEach(t => $('view-' + t).hidden = t !== tab);
   if (tab === 'set' && !D) newDrill();
   if (tab === 'pay' && !Q) newPay();
   if (tab === 'pay' && Q) renderPay();
   if (tab === 'rules') renderRules();
+  if (tab === 'settings') renderSettings();
   if (tab === 'learn') renderLearn();
   window.scrollTo({ top: 0 });
-  try { localStorage.setItem('snn.tab', tab); } catch (e) {}
+  if (tab !== 'learn') try { localStorage.setItem('snn.tab', tab); } catch (e) {}
 }
 document.querySelector('nav.tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(b.dataset.tab); });
 
@@ -915,7 +933,8 @@ document.querySelector('nav.tabs').addEventListener('click', e => { const b = e.
 $('optHint').checked = !!S.hint; $('optQuiz').checked = !!S.quiz;
 bets = { ...S.lastBets };
 renderTable();
-let first = S.learned ? 'table' : 'learn'; try { const h = location.hash.slice(1); first = ['learn', 'table', 'set', 'pay', 'rules'].includes(h) ? h : (S.learned ? (localStorage.getItem('snn.tab') || 'table') : 'learn'); } catch (e) {}
+// 起動時はいつも卓（または最後に開いていたタブ）から。チュートリアルは設定から開く。
+let first = 'table'; try { const h = location.hash.slice(1), last = localStorage.getItem('snn.tab'); first = ['learn', 'table', 'set', 'pay', 'rules', 'settings'].includes(h) ? h : (['table', 'set', 'pay', 'rules', 'settings'].includes(last) ? last : 'table'); } catch (e) {}
 show(first);
 })();
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
