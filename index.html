@@ -12,6 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="牛牛練習">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d3a33'/%3E%3Crect x='17' y='10' width='30' height='44' rx='5' fill='%23fbf8f0'/%3E%3Ctext x='32' y='42' font-size='24' text-anchor='middle' fill='%23c3262d' font-family='serif' font-weight='700'%3E牛%3C/text%3E%3C/svg%3E">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -59,6 +61,9 @@ body {
 }
 .wrap { max-width: 540px; margin: 0 auto; padding-inline: 16px; padding-block: 10px 40px; }
 button { font: inherit; color: inherit; }
+html { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+body { -webkit-user-select: none; user-select: none; }
+.panel p, .panel li, .sheet, .callout { -webkit-user-select: text; user-select: text; }
 :focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
 .num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
 
@@ -70,7 +75,7 @@ header.top { display: flex; align-items: baseline; justify-content: space-betwee
 .bank .lbl { font-size: 11px; color: var(--ink-dim); letter-spacing: .1em; }
 .bank .v { font-family: var(--f-num); font-size: 20px; font-weight: 500; }
 nav.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; background: rgba(0,0,0,.25); border: 1px solid var(--felt-line); border-radius: 10px; padding: 4px; }
-nav.tabs button { background: none; border: 0; padding: 8px 2px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--ink-dim); cursor: pointer; }
+nav.tabs button { background: none; border: 0; padding: 11px 2px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--ink-dim); cursor: pointer; }
 nav.tabs button[aria-selected="true"] { background: var(--brass); color: #1c1a12; font-weight: 700; }
 
 /* felt sections */
@@ -97,6 +102,7 @@ button.card { cursor: pointer; }
 @keyframes deal { from { transform: translate(0,-60px) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .deal { animation: none; } .card { transition: none; } }
 .hand.small { gap: 4px; }
+#dealerHand { max-width: 300px; width: 100%; margin-inline: auto; }
 .hand.small .card .cc { font-size: clamp(16px, 5vw, 24px); }
 
 /* dealer / dice */
@@ -117,7 +123,8 @@ button.card { cursor: pointer; }
 .box { border: 1px dashed var(--felt-line); border-radius: 10px; padding: 6px 5px; min-height: 74px; display: grid; gap: 4px; align-content: start; font-size: 11px; color: var(--ink-dim); }
 .box.empty { opacity: .45; place-content: center; text-align: center; }
 .box.first { border-color: var(--brass); border-style: solid; }
-.box .who { display: flex; justify-content: space-between; gap: 4px; }
+.box .who { display: flex; justify-content: space-between; align-items: center; gap: 2px 4px; flex-wrap: wrap; white-space: nowrap; }
+.box .pill { font-size: 9px; padding: 0 5px; letter-spacing: .03em; }
 .mini { display: flex; }
 .mini span { flex: 1 1 0; min-width: 0; background: var(--card); color: var(--card-ink); font-family: var(--f-num); font-size: 10px; text-align: center; border-radius: 3px; margin-left: -2px; padding: 3px 0; box-shadow: -1px 0 0 rgba(0,0,0,.2); }
 .mini span:first-child { margin-left: 0; }
@@ -133,7 +140,7 @@ button.card { cursor: pointer; }
 
 /* bets */
 .bets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px; }
-.spot { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 50%; border: 2px solid var(--brass-dim); background: rgba(0,0,0,.12); display: grid; place-items: center; text-align: center; cursor: pointer; padding: 6px; }
+.spot { position: relative; height: 92px; max-width: 100%; border-radius: 46px; border: 2px solid var(--brass-dim); background: rgba(0,0,0,.12); display: grid; place-items: center; text-align: center; cursor: pointer; padding: 6px; }
 .spot.super { border-color: var(--super); }
 .spot:disabled { cursor: default; opacity: .8; }
 .spot .t { font-family: var(--f-display); font-weight: 800; letter-spacing: .12em; font-size: 13px; color: var(--brass); line-height: 1.2; }
@@ -159,6 +166,19 @@ button.card { cursor: pointer; }
 .btn:disabled { opacity: .4; cursor: default; }
 .msg { font-size: 13px; color: var(--ink-dim); min-height: 20px; margin-top: 8px; text-align: center; }
 .msg.err { color: var(--lose); }
+
+/* sticky action dock */
+.dock { position: sticky; bottom: 0; z-index: 5; margin: 10px -14px 0; padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)); background: rgba(8,39,31,.94); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border-top: 1px solid var(--felt-line); border-radius: 14px 14px 0 0; }
+.dock .chips { margin-top: 0; margin-bottom: 10px; }
+.dock .actions { margin-top: 0; }
+.dock .msg { margin-top: 6px; min-height: 0; }
+.dock .msg:empty { display: none; }
+.dock-info { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--ink-dim); }
+.dock-info:empty { display: none; }
+.dock-info b { font-size: 16px; color: var(--ink); }
+.dock-info .net { font-family: var(--f-num); font-size: 18px; font-weight: 500; }
+.dock-info .net.pos { color: var(--win); } .dock-info .net.neg { color: var(--lose); }
+.linkbtn { background: none; border: 0; color: var(--brass); font-size: 13px; padding: 6px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
 /* result sheet */
 .sheet { margin-top: 14px; background: var(--card); color: var(--card-ink); border-radius: 12px; padding: 12px 14px; box-shadow: 0 8px 22px rgba(0,0,0,.3); }
@@ -200,7 +220,7 @@ ol.flow { padding-left: 1.3em; margin: 6px 0; }
 ol.flow li { margin: 4px 0; }
 .form { display: grid; gap: 10px; margin-top: 8px; }
 .form label { display: grid; gap: 4px; font-size: 13px; color: var(--ink-dim); }
-.form select, .form input { background: rgba(0,0,0,.25); border: 1px solid var(--felt-line); color: var(--ink); border-radius: 8px; padding: 9px 10px; font: inherit; font-size: 15px; }
+.form select, .form input { min-height: 44px; background: rgba(0,0,0,.25); border: 1px solid var(--felt-line); color: var(--ink); border-radius: 8px; padding: 9px 10px; font: inherit; font-size: 15px; }
 .src a { color: var(--brass); word-break: break-word; }
 details.paytbl { margin-top: 12px; }
 details.paytbl summary { cursor: pointer; font-size: 12px; color: var(--brass); letter-spacing: .08em; text-align: center; list-style: none; }
@@ -216,7 +236,7 @@ details.paytbl[open] summary { margin-bottom: 8px; }
 .ladder span { border: 1px solid var(--felt-line); border-radius: 6px; padding: 2px 7px; }
 .ladder span:first-child { border-color: var(--brass); color: var(--brass); }
 .ladder i { font-style: normal; color: var(--ink-dim); font-size: 10px; }
-.learn-nav { margin-top: 22px; }
+.learn-nav { margin: 22px -16px 0; position: sticky; bottom: 0; z-index: 5; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: rgba(8,39,31,.94); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border-top: 1px solid var(--felt-line); }
 .panel .qopts.lq button { font-family: var(--f-body); font-weight: 500; }
 .panel .sheet p { color: var(--card-ink); }
 </style>
@@ -256,9 +276,12 @@ details.paytbl[open] summary { margin-bottom: 8px; }
         <div class="bets" id="bets"></div>
         <div class="risk" id="risk"></div>
       </div>
-      <div class="chips" id="chips"></div>
-      <div class="actions" id="actions"></div>
-      <div class="msg" id="msg"></div>
+      <div class="dock" id="dock">
+        <div class="dock-info" id="dockInfo"></div>
+        <div class="chips" id="chips"></div>
+        <div class="actions" id="actions"></div>
+        <div class="msg" id="msg"></div>
+      </div>
       <div class="opts">
         <label class="toggle"><input type="checkbox" id="optHint"> カードの数値を表示</label>
         <label class="toggle"><input type="checkbox" id="optQuiz"> 精算額を自分で答える</label>
@@ -277,8 +300,8 @@ details.paytbl[open] summary { margin-bottom: 8px; }
       <div class="zone-title"><b>HAND</b><span class="timer" id="dTimer">0.0s</span></div>
       <div class="hand" id="dHand" style="margin-top:8px"></div>
       <div class="sumline" id="dSum" style="margin-top:12px"></div>
-      <div class="actions" id="dActions"></div>
       <div id="dFb"></div>
+      <div class="actions" id="dActions"></div>
     </div>
     <div class="stats" id="dStats"></div>
   </section>
@@ -437,6 +460,9 @@ function newRound() {
 function renderTable() {
   $('bankV').textContent = yen(S.bank);
   const hint = S.hint;
+  // bet phase: hide empty card placeholders so the bet spots sit on screen
+  const idle = !R;
+  $('dealerHand').hidden = idle; $('boxes').hidden = idle; $('myHand').hidden = idle; $('sumline').hidden = idle;
   // dealer
   const dh = $('dealerHand');
   if (!R) { dh.innerHTML = Array.from({ length: 5 }, () => '<div class="card back" style="opacity:.25"></div>').join(''); $('dealerLvl').textContent = ''; $('dice').innerHTML = '<span>ベットを置いて「ディール」</span>'; }
@@ -462,7 +488,7 @@ function renderTable() {
   if (!R || phase === 'bet') { mh.innerHTML = Array.from({ length: 5 }, () => '<div class="card back" style="opacity:.25"></div>').join(''); $('myLvl').textContent = ''; $('sumline').innerHTML = ''; }
   else {
     const setting = phase === 'set';
-    mh.innerHTML = R.hands[ME].map((c, i) => cardHTML(c, { btn: setting, i, sel: R.sel.includes(i), hint, deal: setting && R.fresh, delay: R.order.indexOf(ME) * 120 + i * 60,
+    mh.innerHTML = R.hands[ME].map((c, i) => cardHTML(c, { btn: setting, i, sel: setting && R.sel.includes(i), hint, deal: setting && R.fresh, delay: R.order.indexOf(ME) * 120 + i * 60,
       mark: !setting && R.myE.level <= 10 && R.myE.triples.length && R.shown && R.shown.includes(i), dim: !setting && R.shown && !R.shown.includes(i) })).join('');
     $('myLvl').innerHTML = phase === 'done' ? `<span class="lvl big">${lvlTxt(R.myE)}</span>` : '';
     renderSumline();
@@ -476,10 +502,18 @@ function renderTable() {
   $('chips').innerHTML = phase === 'bet' ? CHIPS.map(v => `<button type="button" class="chip c${v}" data-chip="${v}" aria-pressed="${chip === v}">${v >= 1000 ? v / 1000 + 'K' : v}</button>`).join('') : '';
   // actions
   let a = '';
-  if (phase === 'bet') a = `<button type="button" class="btn" data-act="clear">クリア</button><button type="button" class="btn" data-act="rebet">前回と同じ</button><button type="button" class="btn primary" data-act="deal">ディール</button>`;
+  let info = '';
+  if (phase === 'bet' && S.bank < S.tableMin) { info = `<span>資金が卓ミニマムを下回った</span>`; a = `<button type="button" class="btn primary" data-act="refill">資金を${yen(START_BANK)}に戻す</button>`; }
+  else if (phase === 'bet') a = `<button type="button" class="btn" data-act="clear">クリア</button><button type="button" class="btn" data-act="rebet">前回と同じ</button><button type="button" class="btn primary" data-act="deal">ディール</button>`;
   else if (phase === 'set') a = `<button type="button" class="btn" data-act="noniu">ノーニウ</button><button type="button" class="btn primary" data-act="claim" ${R.sel.length === 3 ? '' : 'disabled'}>この3枚で組む</button>`;
-  else if (phase === 'quiz') a = '';
-  else a = `<button type="button" class="btn primary" data-act="next">次のハンド</button>`;
+  else if (phase === 'quiz') { info = '<span>下の精算額を選ぶ</span><button type="button" class="linkbtn" data-act="toResult">回答欄へ ↓</button>'; }
+  else {
+    const net = R.res.net;
+    info = `<span><b>${R.res.playerWins ? '勝ち' : '負け'}</b> ${lvlTxt(R.myE)} vs ${lvlTxt(R.dealerE)}</span><span class="net ${net >= 0 ? 'pos' : 'neg'}">${sgn(net)}</span>`;
+    a = `<button type="button" class="btn" data-act="toResult">内訳を見る</button><button type="button" class="btn primary" data-act="next">次のハンド</button>`;
+  }
+  if (phase === 'bet' && !info && R === null && S.st.hands === 0) info = '<span>チップを選んでベット枠をタップ</span>';
+  $('dockInfo').innerHTML = info;
   $('actions').innerHTML = a;
   $('feltPay').innerHTML = payTableHTML(R && phase === 'done' ? R.myE.level : -1);
   renderTableStats();
@@ -517,6 +551,7 @@ function onDeal() {
   S.lastBets = { ...bets }; save();
   newRound(); R.fresh = true; phase = 'set'; setMsg(''); $('result').innerHTML = '';
   renderTable(); startTick();
+  $('mine').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function onClaim(noniu) {
   const t = (performance.now() - R.t0) / 1000; clearInterval(tick);
@@ -588,6 +623,7 @@ function renderQuiz(res) {
   // dealer cards must be visible for quiz: temporarily show
   $('dealerHand').innerHTML = R.hands[0].map(c => cardHTML(c, { hint: S.hint })).join('');
   $('dealerLvl').innerHTML = `<span class="lvl big">${lvlTxt(R.dealerE)}</span>`;
+  $('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 $('view-table').addEventListener('click', ev => {
@@ -609,7 +645,9 @@ $('view-table').addEventListener('click', ev => {
   else if (act === 'deal') onDeal();
   else if (act === 'claim') onClaim(false);
   else if (act === 'noniu') onClaim(true);
-  else if (act === 'next') { phase = 'bet'; R = null; bets = { ...S.lastBets }; $('result').innerHTML = ''; renderTable(); }
+  else if (act === 'next') { phase = 'bet'; R = null; bets = { ...S.lastBets }; $('result').innerHTML = ''; renderTable(); $('view-table').scrollIntoView({ behavior: 'smooth' }); }
+  else if (act === 'toResult') $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  else if (act === 'refill') { S.bank = START_BANK; bets = { even: S.tableMin, double: 0, super: 0 }; save(); setMsg('資金を戻した'); renderTable(); }
 });
 $('optHint').addEventListener('change', e => { S.hint = e.target.checked; save(); renderTable(); });
 $('optQuiz').addEventListener('change', e => { S.quiz = e.target.checked; save(); });
@@ -690,10 +728,11 @@ function renderPay() {
 }
 $('view-pay').addEventListener('click', ev => {
   const t = ev.target.closest('button'); if (!t || t.dataset.p === undefined) return;
-  if (t.dataset.p === 'next') return newPay();
+  if (t.dataset.p === 'next') { newPay(); return window.scrollTo({ top: 0, behavior: 'smooth' }); }
   if (Q.ans !== null) return;
   Q.ans = +t.dataset.p; const ok = Math.abs(Q.ans - Q.correct) < .01;
   S.ps.n++; if (ok) { S.ps.ok++; S.ps.streak++; } else S.ps.streak = 0; save(); renderPay();
+  const nb = document.querySelector('[data-p=next]'); if (nb) nb.scrollIntoView({ behavior: 'smooth', block: 'end' });
 });
 
 // ---------- RULES ----------
@@ -701,8 +740,8 @@ function renderRules() {
   const p = P(); const md = NN.maxMult(p, 'double'), ms = NN.maxMult(p, 'super');
   $('rulesBody').innerHTML = `
   <h2>結論：EVENだけ打つ。SUPERは控除率が約14%</h2>
-  <div class="callout">EVENの控除率は約2.3%。その大半は「ニウ6で勝つと半額」の1ルールから来ている。DOUBLEは約2.9%でEVENとほぼ同水準だが、負けると最大${md}倍取られるので振れ幅が大きい。SUPERは約14〜15%で、バカラのタイ並みに不利。</div>
-  <p class="note">数値は本アプリのロジックで300万ハンドを試算した値（City of Dreams Manila公表値：EVEN 2.25% / DOUBLE 2.7% / SUPER 14.04% と整合）。DOUBLE・SUPERの控除率はその賭け金1単位あたり。</p>
+  <div class="callout">EVENの控除率は約2.2%。その大半は「ニウ6で勝つと半額」の1ルールから来ている。DOUBLEは約2.6%でEVENとほぼ同水準だが、負けると最大${md}倍取られるので振れ幅が大きい。SUPERは約14%で、バカラのタイ並みに不利。</div>
+  <p class="note">数値は本アプリのロジックで300万ハンドを試算した値（EVEN 2.20% / DOUBLE 2.55% / SUPER 13.6%。City of Dreams Manila公表値 EVEN 2.25% / DOUBLE 2.7% / SUPER 14.04% とほぼ一致）。DOUBLE・SUPERの控除率はその賭け金1単位あたり。</p>
 
   <h2>1ハンドの流れ</h2>
   <ol class="flow">
@@ -830,7 +869,7 @@ const STEPS = [
     <ol class="flow"><li>10の倍数の3枚を探す。あれば点数は5枚合計の下一桁。</li>
     <li>DOUBLE・SUPERは負けるとディーラーの役の倍率で払う。</li>
     <li>ニウ6のEVENは半額、2倍以上の勝ちには5%タックス。</li></ol>
-    <div class="callout">賭け方はEVENだけがおすすめ。カジノの取り分はEVENが約2.3%、SUPERは約14%と大きく違う。</div>
+    <div class="callout">賭け方はEVENだけがおすすめ。カジノの取り分はEVENが約2.2%、SUPERは約14%と大きく違う。</div>
     <div class="actions"><button type="button" class="btn" data-lx="go-set">役作りドリルへ</button><button type="button" class="btn primary" data-lx="go-table">卓で練習する</button></div>` },
 ];
 function renderLearn() {
@@ -879,6 +918,7 @@ renderTable();
 let first = S.learned ? 'table' : 'learn'; try { const h = location.hash.slice(1); first = ['learn', 'table', 'set', 'pay', 'rules'].includes(h) ? h : (S.learned ? (localStorage.getItem('snn.tab') || 'table') : 'learn'); } catch (e) {}
 show(first);
 })();
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 </script>
 
 </body>
