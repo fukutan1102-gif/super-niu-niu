@@ -2,7 +2,7 @@
 
 マニラのカジノで遊ばれている **Super Niu Niu（超級牛牛）** を、スマホで練習するための非公式アプリです。リアルマネーは一切使いません。
 
-**▶ 遊ぶ：** https://OWNER.github.io/super-niu-niu/
+**▶ 遊ぶ：** https://fukutan1102-gif.github.io/super-niu-niu/
 
 ## できること
 
