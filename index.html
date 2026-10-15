@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="マニラ式 Super Niu Niu（超級牛牛）をチュートリアル・ディーラー卓・役作りドリル・精算ドリルで練習できるスマホ向けアプリ">
+<meta property="og:title" content="Super Niu Niu 練習卓">
+<meta property="og:description" content="カジノに行く前に、牛牛の役作りと精算をスマホで練習">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#08271f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="牛牛練習">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d3a33'/%3E%3Crect x='17' y='10' width='30' height='44' rx='5' fill='%23fbf8f0'/%3E%3Ctext x='32' y='42' font-size='24' text-anchor='middle' fill='%23c3262d' font-family='serif' font-weight='700'%3E牛%3C/text%3E%3C/svg%3E">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font-size:14px;font-family:system-ui,sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Super Niu Niu 練習卓</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one-column phone table. Felt surface with printed brass markings; dealer on top, your box at the bottom, tabs for drills and rules.
+   Deliberate single look: casino felt (dark), not theme-switched. */
+:root {
+  --felt: #0d3a33;
+  --felt-deep: #08271f;
+  --felt-line: #2f6a5d;
+  --brass: #d1ad62;
+  --brass-dim: #8f7642;
+  --ink: #efe8d6;
+  --ink-dim: #a9bdb4;
+  --super: #c2413a;
+  --win: #7fd19a;
+  --lose: #ef8a7f;
+  --card: #fbf8f0;
+  --card-ink: #1b1d1c;
+  --card-red: #c3262d;
+  --card-back: #6b1f24;
+  --chip-100: #e9e4d8;
+  --chip-500: #6a3f9c;
+  --chip-1k: #222a2e;
+  --chip-5k: #c98a2b;
+  --f-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --f-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --f-num: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: radial-gradient(120% 70% at 50% 0%, var(--felt) 0%, var(--felt-deep) 85%) no-repeat, var(--felt-deep);
+  min-height: 100%;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+}
+.wrap { max-width: 540px; margin: 0 auto; padding-inline: 16px; padding-block: 10px 40px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+
+/* header */
+header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-block: 6px 10px; }
+.brand { font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: .04em; color: var(--brass); line-height: 1.1; }
+.brand small { display: block; font-family: var(--f-body); font-weight: 500; font-size: 11px; letter-spacing: .14em; color: var(--ink-dim); text-transform: uppercase; }
+.bank { text-align: right; }
+.bank .lbl { font-size: 11px; color: var(--ink-dim); letter-spacing: .1em; }
+.bank .v { font-family: var(--f-num); font-size: 20px; font-weight: 500; }
+nav.tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; background: rgba(0,0,0,.25); border: 1px solid var(--felt-line); border-radius: 10px; padding: 4px; }
+nav.tabs button { background: none; border: 0; padding: 8px 2px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--ink-dim); cursor: pointer; }
+nav.tabs button[aria-selected="true"] { background: var(--brass); color: #1c1a12; font-weight: 700; }
+
+/* felt sections */
+.felt { margin-top: 14px; border: 1px solid var(--felt-line); border-radius: 18px 18px 120px 120px / 18px 18px 60px 60px; padding: 14px 14px 22px; position: relative; background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.08)); }
+.print { font-family: var(--f-display); color: var(--brass); letter-spacing: .18em; font-size: 12px; text-align: center; opacity: .9; }
+.zone-title { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12px; color: var(--ink-dim); letter-spacing: .08em; }
+.zone-title b { font-family: var(--f-display); color: var(--brass); font-size: 14px; letter-spacing: .12em; font-weight: 600; }
+
+/* cards */
+.hand { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.card { position: relative; aspect-ratio: 5 / 7; max-width: 100%; border-radius: 7px; background: var(--card); color: var(--card-ink); border: 0; padding: 0; box-shadow: 0 2px 0 rgba(0,0,0,.25), 0 6px 14px rgba(0,0,0,.25); font-family: var(--f-num); cursor: default; transition: transform .15s ease, box-shadow .15s ease; overflow: hidden; }
+.card.red { color: var(--card-red); }
+.card .cr { position: absolute; top: 4%; left: 8%; font-size: clamp(12px, 3.6vw, 17px); font-weight: 500; line-height: 1; }
+.card .cs { position: absolute; top: 20%; left: 8%; font-size: clamp(10px, 3vw, 14px); line-height: 1; }
+.card .cc { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(22px, 8vw, 36px); padding-top: 14%; }
+.card .cc.face { font-family: var(--f-display); font-weight: 800; }
+.card .cv { position: absolute; right: 6%; bottom: 4%; font-size: 10px; color: #6f7a75; }
+.card.back { background: repeating-linear-gradient(45deg, var(--card-back) 0 6px, #7d2a30 6px 12px); border: 3px solid var(--card); }
+button.card { cursor: pointer; }
+.card.sel { transform: translateY(-10px); box-shadow: 0 0 0 3px var(--brass), 0 10px 18px rgba(0,0,0,.35); }
+.card.dim { opacity: .55; }
+.card.mark { box-shadow: 0 0 0 3px var(--brass), 0 6px 14px rgba(0,0,0,.25); }
+.deal { animation: deal .32s cubic-bezier(.2,.8,.3,1) both; }
+@keyframes deal { from { transform: translate(0,-60px) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .deal { animation: none; } .card { transition: none; } }
+.hand.small { gap: 4px; }
+.hand.small .card .cc { font-size: clamp(16px, 5vw, 24px); }
+
+/* dealer / dice */
+.dealer-row { display: grid; gap: 8px; }
+.dice { display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 12px; color: var(--ink-dim); min-height: 30px; }
+.die { width: 24px; height: 24px; border-radius: 5px; background: var(--card); color: var(--card-red); display: grid; place-items: center; font-family: var(--f-num); font-weight: 500; font-size: 14px; box-shadow: 0 2px 0 rgba(0,0,0,.3); }
+.die.roll { animation: roll .5s ease; }
+@keyframes roll { 0% { transform: rotate(0) scale(.6); } 60% { transform: rotate(300deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+.lvl { display: inline-block; font-family: var(--f-display); font-weight: 800; font-size: 15px; color: var(--ink); letter-spacing: .05em; }
+.lvl.big { font-size: 20px; color: var(--brass); }
+.pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; letter-spacing: .06em; }
+.pill.win { background: var(--win); color: #0a2a19; }
+.pill.lose { background: var(--lose); color: #3a0d09; }
+.pill.wait { background: rgba(255,255,255,.12); color: var(--ink-dim); }
+
+/* other boxes */
+.boxes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.box { border: 1px dashed var(--felt-line); border-radius: 10px; padding: 6px 5px; min-height: 74px; display: grid; gap: 4px; align-content: start; font-size: 11px; color: var(--ink-dim); }
+.box.empty { opacity: .45; place-content: center; text-align: center; }
+.box.first { border-color: var(--brass); border-style: solid; }
+.box .who { display: flex; justify-content: space-between; gap: 4px; }
+.mini { display: flex; }
+.mini span { flex: 1 1 0; min-width: 0; background: var(--card); color: var(--card-ink); font-family: var(--f-num); font-size: 10px; text-align: center; border-radius: 3px; margin-left: -2px; padding: 3px 0; box-shadow: -1px 0 0 rgba(0,0,0,.2); }
+.mini span:first-child { margin-left: 0; }
+.mini span.red { color: var(--card-red); }
+.mini span.b { background: repeating-linear-gradient(45deg, var(--card-back) 0 3px, #7d2a30 3px 6px); color: transparent; }
+
+/* your box */
+.mine { margin-top: 16px; border: 1px solid var(--brass-dim); border-radius: 14px; padding: 12px; background: rgba(0,0,0,.14); display: grid; gap: 10px; }
+.mine.first { box-shadow: 0 0 0 1px var(--brass) inset; }
+.sumline { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-dim); min-height: 22px; flex-wrap: wrap; }
+.sumline .ok { color: var(--win); font-weight: 700; }
+.sumline .ng { color: var(--lose); font-weight: 700; }
+
+/* bets */
+.bets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px; }
+.spot { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 50%; border: 2px solid var(--brass-dim); background: rgba(0,0,0,.12); display: grid; place-items: center; text-align: center; cursor: pointer; padding: 6px; }
+.spot.super { border-color: var(--super); }
+.spot:disabled { cursor: default; opacity: .8; }
+.spot .t { font-family: var(--f-display); font-weight: 800; letter-spacing: .12em; font-size: 13px; color: var(--brass); line-height: 1.2; }
+.spot.super .t { color: #ec7b70; }
+.spot .s { font-size: 10px; color: var(--ink-dim); line-height: 1.3; }
+.spot .amt { font-family: var(--f-num); font-size: 15px; font-weight: 500; color: var(--ink); }
+.stack { position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column-reverse; align-items: center; }
+.stack i { display: block; width: 26px; height: 6px; border-radius: 50%; margin-top: -3px; border: 1px solid rgba(0,0,0,.4); }
+.chips { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+.chip { width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer; font-family: var(--f-num); font-weight: 500; font-size: 12px; display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 rgba(0,0,0,.35); }
+.chip::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 2px dashed rgba(255,255,255,.55); }
+.chip.c100 { background: var(--chip-100); color: #222; } .chip.c100::before { border-color: rgba(0,0,0,.35); }
+.chip.c500 { background: var(--chip-500); color: #fff; }
+.chip.c1000 { background: var(--chip-1k); color: #fff; }
+.chip.c5000 { background: var(--chip-5k); color: #1d1406; }
+.chip[aria-pressed="true"] { transform: translateY(-4px); box-shadow: 0 0 0 3px var(--brass), 0 6px 0 rgba(0,0,0,.35); }
+.risk { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--ink-dim); margin-top: 10px; flex-wrap: wrap; }
+.risk b { color: var(--ink); font-family: var(--f-num); font-weight: 500; }
+
+.actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.btn { flex: 1 1 0; min-width: 0; border: 1px solid var(--brass-dim); background: rgba(0,0,0,.2); border-radius: 10px; padding: 11px 8px; font-weight: 700; font-size: 14px; cursor: pointer; white-space: nowrap; }
+.btn.primary { background: var(--brass); color: #1c1a12; border-color: var(--brass); }
+.btn:disabled { opacity: .4; cursor: default; }
+.msg { font-size: 13px; color: var(--ink-dim); min-height: 20px; margin-top: 8px; text-align: center; }
+.msg.err { color: var(--lose); }
+
+/* result sheet */
+.sheet { margin-top: 14px; background: var(--card); color: var(--card-ink); border-radius: 12px; padding: 12px 14px; box-shadow: 0 8px 22px rgba(0,0,0,.3); }
+.sheet h3 { margin: 0 0 6px; font-family: var(--f-display); font-size: 16px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.sheet .row { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px; padding: 6px 0; border-top: 1px solid #e3ddcc; font-size: 13px; align-items: baseline; }
+.sheet .row .k { font-family: var(--f-display); font-weight: 800; letter-spacing: .06em; }
+.sheet .row .why { color: #5a605d; min-width: 0; }
+.sheet .row .n { font-family: var(--f-num); text-align: right; }
+.sheet .tot { display: flex; justify-content: space-between; border-top: 2px solid #1b1d1c; padding-top: 8px; margin-top: 4px; font-weight: 700; }
+.pos { color: #1d7a43; } .neg { color: #b42a22; }
+.sheet .fb { font-size: 13px; padding: 8px 10px; background: #f1ecdf; border-radius: 8px; margin-bottom: 8px; }
+.qopts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.qopts button { border: 1px solid #c9c1ab; background: #fff; color: var(--card-ink); border-radius: 9px; padding: 10px 6px; font-family: var(--f-num); font-size: 15px; cursor: pointer; }
+.qopts button.right { background: #d8f0df; border-color: #1d7a43; }
+.qopts button.wrong { background: #f8dcd8; border-color: #b42a22; }
+
+/* panels */
+.panel { margin-top: 14px; }
+.panel h2 { font-family: var(--f-display); font-size: 19px; color: var(--brass); margin: 18px 0 6px; letter-spacing: .04em; text-wrap: balance; }
+.panel p, .panel li { color: var(--ink); font-size: 14px; }
+.panel .lead { color: var(--ink-dim); font-size: 13px; margin: 0 0 10px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.stat { border: 1px solid var(--felt-line); border-radius: 10px; padding: 8px 10px; }
+.stat .l { font-size: 11px; color: var(--ink-dim); }
+.stat .v { font-family: var(--f-num); font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--felt-line); border-radius: 10px; }
+table.pay { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 330px; }
+table.pay th, table.pay td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,.07); text-align: right; white-space: nowrap; }
+table.pay th:first-child, table.pay td:first-child { text-align: left; }
+table.pay thead th { font-family: var(--f-display); color: var(--brass); letter-spacing: .08em; font-weight: 600; background: rgba(0,0,0,.2); }
+table.pay td { font-family: var(--f-num); }
+table.pay td:first-child { font-family: var(--f-body); font-weight: 500; }
+table.pay td.tax::after { content: " ※"; color: var(--brass); }
+table.pay tr.hl td { background: rgba(209,173,98,.12); }
+.note { font-size: 12px; color: var(--ink-dim); }
+.callout { border-left: 3px solid var(--brass); padding: 8px 12px; background: rgba(0,0,0,.18); border-radius: 0 10px 10px 0; font-size: 14px; margin: 10px 0; }
+.callout.warn { border-left-color: var(--super); }
+ol.flow { padding-left: 1.3em; margin: 6px 0; }
+ol.flow li { margin: 4px 0; }
+.form { display: grid; gap: 10px; margin-top: 8px; }
+.form label { display: grid; gap: 4px; font-size: 13px; color: var(--ink-dim); }
+.form select, .form input { background: rgba(0,0,0,.25); border: 1px solid var(--felt-line); color: var(--ink); border-radius: 8px; padding: 9px 10px; font: inherit; font-size: 15px; }
+.src a { color: var(--brass); word-break: break-word; }
+details.paytbl { margin-top: 12px; }
+details.paytbl summary { cursor: pointer; font-size: 12px; color: var(--brass); letter-spacing: .08em; text-align: center; list-style: none; }
+details.paytbl summary::-webkit-details-marker { display: none; }
+details.paytbl[open] summary { margin-bottom: 8px; }
+.timer { font-family: var(--f-num); font-size: 12px; color: var(--ink-dim); }
+.toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-dim); cursor: pointer; }
+.toggle input { accent-color: var(--brass); width: 18px; height: 18px; }
+.opts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; justify-content: center; }
+.prog { height: 4px; background: rgba(255,255,255,.08); border-radius: 4px; overflow: hidden; }
+.prog span { display: block; height: 100%; background: var(--brass); transition: width .25s ease; }
+.ladder { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 2px; font-size: 12px; margin: 6px 0 10px; }
+.ladder span { border: 1px solid var(--felt-line); border-radius: 6px; padding: 2px 7px; }
+.ladder span:first-child { border-color: var(--brass); color: var(--brass); }
+.ladder i { font-style: normal; color: var(--ink-dim); font-size: 10px; }
+.learn-nav { margin-top: 22px; }
+.panel .qopts.lq button { font-family: var(--f-body); font-weight: 500; }
+.panel .sheet p { color: var(--card-ink); }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">SUPER NIU NIU<small>練習卓 · マニラ式</small></div>
+    <div class="bank"><div class="lbl">BANKROLL</div><div class="v" id="bankV">₱45,000</div></div>
+  </header>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-learn" data-tab="learn" aria-selected="false">入門</button>
+    <button role="tab" id="tab-table" data-tab="table" aria-selected="true">卓</button>
+    <button role="tab" id="tab-set" data-tab="set" aria-selected="false">役作り</button>
+    <button role="tab" id="tab-pay" data-tab="pay" aria-selected="false">精算</button>
+    <button role="tab" id="tab-rules" data-tab="rules" aria-selected="false">ルール</button>
+  </nav>
+
+  <!-- TUTORIAL -->
+  <section id="view-learn" class="panel" hidden><div id="learnBody"></div></section>
+
+  <!-- TABLE -->
+  <section id="view-table">
+    <div class="felt">
+      <div class="print">SUPER NIU NIU · 超級牛牛</div>
+      <div class="dealer-row" style="margin-top:10px">
+        <div class="zone-title"><b>DEALER</b><span id="dealerLvl"></span></div>
+        <div class="hand small" id="dealerHand"></div>
+        <div class="dice" id="dice"></div>
+      </div>
+      <div class="boxes" id="boxes"></div>
+      <div class="mine" id="mine">
+        <div class="zone-title"><b>BOX 3 · あなた</b><span id="myLvl" class="timer"></span></div>
+        <div class="hand" id="myHand"></div>
+        <div class="sumline" id="sumline"></div>
+        <div class="bets" id="bets"></div>
+        <div class="risk" id="risk"></div>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="actions" id="actions"></div>
+      <div class="msg" id="msg"></div>
+      <div class="opts">
+        <label class="toggle"><input type="checkbox" id="optHint"> カードの数値を表示</label>
+        <label class="toggle"><input type="checkbox" id="optQuiz"> 精算額を自分で答える</label>
+      </div>
+      <details class="paytbl"><summary>配当表を見る ▾</summary><div id="feltPay"></div></details>
+    </div>
+    <div id="result"></div>
+    <div class="stats" id="tableStats"></div>
+  </section>
+
+  <!-- SET DRILL -->
+  <section id="view-set" class="panel" hidden>
+    <h2>役作りドリル</h2>
+    <p class="lead">5枚から合計が10の倍数になる3枚を探す。見つからなければ「ノーニウ」。ニウがある限り、点数は5枚合計の下一桁で決まる。</p>
+    <div class="felt" style="border-radius:18px">
+      <div class="zone-title"><b>HAND</b><span class="timer" id="dTimer">0.0s</span></div>
+      <div class="hand" id="dHand" style="margin-top:8px"></div>
+      <div class="sumline" id="dSum" style="margin-top:12px"></div>
+      <div class="actions" id="dActions"></div>
+      <div id="dFb"></div>
+    </div>
+    <div class="stats" id="dStats"></div>
+  </section>
+
+  <!-- PAY DRILL -->
+  <section id="view-pay" class="panel" hidden>
+    <h2>精算ドリル</h2>
+    <p class="lead">勝ちは自分の役、負けはディーラーの役で倍率が決まる。タックスとニウ6の半額を忘れずに。</p>
+    <div id="pQ"></div>
+    <div class="stats" id="pStats"></div>
+  </section>
+
+  <!-- RULES -->
+  <section id="view-rules" class="panel" hidden>
+    <div id="rulesBody"></div>
+  </section>
+</div>
+
+<script>
+// ===== Super Niu Niu engine =====
+const NN = (() => {
+  const SUIT_SYM = ['♠','♥','♣','♦']; // tie-break order: S > H > C > D
+  const RANK_TXT = ['', 'A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const val = c => Math.min(c.r, 10);
+  const key = c => c.r * 4 + (3 - c.s); // higher = stronger single card
+  function deck() { const d = []; for (let s = 0; s < 4; s++) for (let r = 1; r <= 13; r++) d.push({ r, s }); return d; }
+  function shuffle(a, rnd = Math.random) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  const TRIPLES = []; for (let i = 0; i < 5; i++) for (let j = i + 1; j < 5; j++) for (let k = j + 1; k < 5; k++) TRIPLES.push([i, j, k]);
+  // level: 0 = No Niu, 1..9 = Niu n, 10 = Niu Niu, 11 = Five Pictures (option), 12 = Four of a Kind
+  function evaluate(cards, opt = {}) {
+    const cnt = {}; cards.forEach(c => cnt[c.r] = (cnt[c.r] || 0) + 1);
+    const quad = Object.keys(cnt).find(r => cnt[r] === 4);
+    const high = cards.reduce((m, c) => key(c) > key(m) ? c : m, cards[0]);
+    const total = cards.reduce((s, c) => s + val(c), 0);
+    const triples = TRIPLES.filter(t => (val(cards[t[0]]) + val(cards[t[1]]) + val(cards[t[2]])) % 10 === 0);
+    let level, tk = key(high);
+    if (quad) { level = 12; tk = (+quad) * 4 + 3; }
+    else if (opt.fivePics && cards.every(c => c.r >= 11)) level = 11;
+    else if (triples.length) { const p = total % 10; level = p === 0 ? 10 : p; }
+    else level = 0;
+    return { level, tk, high, triples, total };
+  }
+  function compare(a, b) { return a.level !== b.level ? a.level - b.level : a.tk - b.tk; }
+  function levelName(l) {
+    if (l === 12) return 'フォーカード'; if (l === 11) return 'ファイブピクチャー';
+    if (l === 10) return 'ニウニウ'; if (l === 0) return 'ノーニウ'; return 'ニウ' + l;
+  }
+  function levelNameEn(l) {
+    if (l === 12) return 'Four of a Kind'; if (l === 11) return 'Five Pictures';
+    if (l === 10) return 'Niu Niu'; if (l === 0) return 'High Card'; return 'Niu ' + l;
+  }
+  // Pay presets. mult(level) for Double/Super is used for wins (player's hand) AND losses (dealer's hand).
+  const PRESETS = {
+    cod: {
+      name: 'マニラ標準（City of Dreams型）', short: 'CoD型', fivePics: false,
+      evenWin: l => l === 6 ? 0.5 : 1,
+      double: l => l >= 10 ? 3 : l >= 7 ? 2 : 1, doubleTax: l => l >= 7,
+      super: l => l === 12 ? 11 : l === 10 ? 10 : l >= 1 ? l : 1, superTax: l => l >= 2,
+    },
+    solaire: {
+      name: 'Solaire型（4カード=Double 5倍）', short: 'Solaire型', fivePics: false,
+      evenWin: l => l === 6 ? 0.5 : 1,
+      double: l => l === 12 ? 5 : l >= 10 ? 3 : l >= 7 ? 2 : 1, doubleTax: l => l >= 7,
+      super: l => l === 12 ? 11 : l === 10 ? 10 : l >= 1 ? l : 1, superTax: l => l >= 2,
+    },
+  };
+  const maxMult = (p, kind) => Math.max(...[0,1,2,3,4,5,6,7,8,9,10,11,12].map(l => p[kind](l)));
+  function reserve(p, bets) { return (bets.double || 0) * (maxMult(p, 'double') - 1) + (bets.super || 0) * (maxMult(p, 'super') - 1); }
+  function settle(bets, pe, de, p) {
+    const playerWins = compare(pe, de) > 0; const lines = [];
+    const add = (kind, label, wager) => {
+      if (!wager) return;
+      if (playerWins) {
+        let mult, tax = 0, note = '';
+        if (kind === 'even') { mult = p.evenWin(pe.level); if (mult === 0.5) note = 'ニウ6勝ちは半額（50%コミッション）'; }
+        else { mult = p[kind](pe.level); if (p[kind + 'Tax'](pe.level)) { tax = wager * mult * 0.05; note = '勝ち額に5%タックス'; } }
+        lines.push({ kind, label, wager, win: true, mult, gross: wager * mult, tax, net: wager * mult - tax, note, basis: pe.level });
+      } else {
+        const mult = kind === 'even' ? 1 : p[kind](de.level);
+        lines.push({ kind, label, wager, win: false, mult, gross: -wager * mult, tax: 0, net: -wager * mult, note: kind === 'even' ? '' : 'ディーラーの役の倍率で負け', basis: de.level });
+      }
+    };
+    add('even', 'EVEN', bets.even); add('double', 'DOUBLE', bets.double); add('super', 'SUPER', bets.super);
+    return { playerWins, lines, net: lines.reduce((s, x) => s + x.net, 0) };
+  }
+  return { SUIT_SYM, RANK_TXT, val, key, deck, shuffle, TRIPLES, evaluate, compare, levelName, levelNameEn, PRESETS, maxMult, reserve, settle };
+})();
+if (typeof module !== 'undefined') module.exports = NN;
+
+</script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const yen = n => (n < 0 ? '−' : '') + '₱' + Math.abs(Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
+const sgn = n => (n > 0 ? '+' : n < 0 ? '−' : '±') + '₱' + Math.abs(Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
+const START_BANK = 45000;
+const CHIPS = [100, 500, 1000, 5000];
+const CHIP_COLOR = { 100: 'var(--chip-100)', 500: 'var(--chip-500)', 1000: 'var(--chip-1k)', 5000: 'var(--chip-5k)' };
+
+// ---------- persistent state ----------
+const DEF = { bank: START_BANK, preset: 'cod', tableMin: 500, hint: false, quiz: false, lastBets: { even: 1000, double: 0, super: 0 },
+  st: { hands: 0, wins: 0, net: 0, setN: 0, setOk: 0, setT: 0 }, ds: { n: 0, ok: 0, t: 0, streak: 0, best: 0 }, ps: { n: 0, ok: 0, streak: 0 } };
+let S;
+try { S = Object.assign(structuredClone(DEF), JSON.parse(localStorage.getItem('snn.v1') || '{}')); } catch (e) { S = structuredClone(DEF); }
+const save = () => { try { localStorage.setItem('snn.v1', JSON.stringify(S)); } catch (e) {} };
+const P = () => NN.PRESETS[S.preset] || NN.PRESETS.cod;
+
+// ---------- card rendering ----------
+const FACE = { 11: 'J', 12: 'Q', 13: 'K', 1: 'A' };
+function cardHTML(c, o = {}) {
+  const red = c.s === 1 || c.s === 3, rt = NN.RANK_TXT[c.r], sym = NN.SUIT_SYM[c.s];
+  const center = c.r >= 11 ? `<span class="cc face">${rt}</span>` : `<span class="cc">${sym}</span>`;
+  const tag = o.btn ? 'button' : 'div';
+  const cls = ['card', red ? 'red' : '', o.sel ? 'sel' : '', o.dim ? 'dim' : '', o.mark ? 'mark' : '', o.deal ? 'deal' : ''].join(' ');
+  const style = o.deal ? ` style="animation-delay:${o.delay || 0}ms"` : '';
+  const aria = o.btn ? ` aria-pressed="${!!o.sel}" aria-label="${sym}${rt}"` : '';
+  return `<${tag} class="${cls}"${o.btn ? ` type="button" data-i="${o.i}"` : ''}${style}${aria}><span class="cr">${rt}</span><span class="cs">${sym}</span>${center}${o.hint ? `<span class="cv">${NN.val(c)}</span>` : ''}</${tag}>`;
+}
+const backHTML = (o = {}) => `<div class="card back ${o.deal ? 'deal' : ''}" style="animation-delay:${o.delay || 0}ms"></div>`;
+const miniHTML = (cards, open) => '<div class="mini">' + cards.map(c => open ? `<span class="${c.s % 2 ? 'red' : ''}">${NN.RANK_TXT[c.r]}${NN.SUIT_SYM[c.s]}</span>` : '<span class="b">·</span>').join('') + '</div>';
+const lvlTxt = e => NN.levelName(e.level);
+
+// ---------- pay table ----------
+function payTableHTML(hlLevel) {
+  const p = P(); const levels = [12, ...(p.fivePics ? [11] : []), 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+  const fmt = m => (m === 0.5 ? '1:1 半額' : m + ':1');
+  return `<div class="tbl-wrap"><table class="pay"><thead><tr><th>役</th><th>EVEN</th><th>DOUBLE</th><th>SUPER</th></tr></thead><tbody>` +
+    levels.map(l => `<tr class="${l === hlLevel ? 'hl' : ''}"><td>${NN.levelName(l)}</td><td>${fmt(p.evenWin(l))}</td><td class="${p.doubleTax(l) ? 'tax' : ''}">${fmt(p.double(l))}</td><td class="${p.superTax(l) ? 'tax' : ''}">${fmt(p.super(l))}</td></tr>`).join('') +
+    `</tbody></table></div><p class="note" style="margin:6px 2px 0">※ 勝ち額から5%タックス。DOUBLE・SUPERは負けたときもディーラーの役の倍率で払う。</p>`;
+}
+
+// ---------- TABLE ----------
+let R = null; // round
+let bets = { even: 0, double: 0, super: 0 };
+let chip = 500;
+let phase = 'bet';
+const ME = 3, BOXES = [1, 2, 3, 4, 5];
+
+function atRisk(b) { const p = P(); return b.even + b.double * NN.maxMult(p, 'double') + b.super * NN.maxMult(p, 'super'); }
+
+function newRound() {
+  const deck = NN.shuffle(NN.deck());
+  const dice = [1, 2, 3].map(() => 1 + Math.floor(Math.random() * 6));
+  const sum = dice.reduce((a, b) => a + b, 0);
+  // positions: 0 = dealer, 1..5 = boxes. Count from dealer as 1.
+  const startPos = (sum - 1) % 6;
+  const others = BOXES.filter(b => b !== ME).map(b => ({ box: b, on: Math.random() < 0.7 }));
+  const order = []; for (let k = 0; k < 6; k++) { const pos = (startPos + k) % 6; if (pos === 0 || pos === ME || others.find(o => o.box === pos && o.on)) order.push(pos); }
+  const hands = {}; let idx = 0; for (const pos of order) { hands[pos] = deck.slice(idx, idx + 5); idx += 5; }
+  const opt = { fivePics: P().fivePics };
+  R = { dice, sum, startPos, others, hands, order, sel: [], t0: performance.now(), claim: null,
+    dealerE: NN.evaluate(hands[0], opt), myE: NN.evaluate(hands[ME], opt) };
+  others.forEach(o => { if (o.on) o.e = NN.evaluate(hands[o.box], opt); });
+}
+
+function renderTable() {
+  $('bankV').textContent = yen(S.bank);
+  const hint = S.hint;
+  // dealer
+  const dh = $('dealerHand');
+  if (!R) { dh.innerHTML = Array.from({ length: 5 }, () => '<div class="card back" style="opacity:.25"></div>').join(''); $('dealerLvl').textContent = ''; $('dice').innerHTML = '<span>ベットを置いて「ディール」</span>'; }
+  else {
+    const open = phase === 'done';
+    dh.innerHTML = R.hands[0].map((c, i) => open ? cardHTML(c, { hint, mark: R.dealerE.triples[0] && R.dealerE.level <= 10 && R.dealerE.triples[0].includes(i) }) : backHTML({ deal: phase === 'set' && R.fresh, delay: R.order.indexOf(0) * 120 + i * 40 })).join('');
+    $('dealerLvl').innerHTML = open ? `<span class="lvl big">${lvlTxt(R.dealerE)}</span>` : '';
+    const startName = R.startPos === 0 ? 'ディーラー' : `BOX ${R.startPos}`;
+    $('dice').innerHTML = R.dice.map(d => `<span class="die ${R.fresh ? 'roll' : ''}">${d}</span>`).join('') + `<span>合計 <b class="num">${R.sum}</b> → <b>${startName}</b> から配る</span>`;
+  }
+  // other boxes
+  $('boxes').innerHTML = BOXES.filter(b => b !== ME).map(b => {
+    if (!R) return `<div class="box empty">BOX ${b}</div>`;
+    const o = R.others.find(x => x.box === b);
+    if (!o.on) return `<div class="box empty">BOX ${b}<br>空席</div>`;
+    const open = phase === 'done';
+    const res = open ? (NN.compare(o.e, R.dealerE) > 0 ? '<span class="pill win">WIN</span>' : '<span class="pill lose">LOSE</span>') : '';
+    return `<div class="box ${R.startPos === b ? 'first' : ''}"><div class="who"><span>BOX ${b}</span>${res}</div>${miniHTML(R.hands[b], open)}<div>${open ? lvlTxt(o.e) : '&nbsp;'}</div></div>`;
+  }).join('');
+  $('mine').classList.toggle('first', !!R && R.startPos === ME);
+  // my hand
+  const mh = $('myHand');
+  if (!R || phase === 'bet') { mh.innerHTML = Array.from({ length: 5 }, () => '<div class="card back" style="opacity:.25"></div>').join(''); $('myLvl').textContent = ''; $('sumline').innerHTML = ''; }
+  else {
+    const setting = phase === 'set';
+    mh.innerHTML = R.hands[ME].map((c, i) => cardHTML(c, { btn: setting, i, sel: R.sel.includes(i), hint, deal: setting && R.fresh, delay: R.order.indexOf(ME) * 120 + i * 60,
+      mark: !setting && R.myE.level <= 10 && R.myE.triples.length && R.shown && R.shown.includes(i), dim: !setting && R.shown && !R.shown.includes(i) })).join('');
+    $('myLvl').innerHTML = phase === 'done' ? `<span class="lvl big">${lvlTxt(R.myE)}</span>` : '';
+    renderSumline();
+  }
+  // bets
+  const locked = phase !== 'bet';
+  const spot = (k, t, s, cls = '') => `<button type="button" class="spot ${cls}" data-spot="${k}" ${locked ? 'disabled' : ''} aria-label="${t}にベット"><div><div class="t">${t}</div><div class="s">${s}</div><div class="amt">${bets[k] ? yen(bets[k]) : '—'}</div></div>${stackHTML(bets[k])}</button>`;
+  $('bets').innerHTML = spot('even', 'EVEN', '1:1') + spot('double', 'DOUBLE', '最大3倍') + spot('super', 'SUPER', '最大' + NN.maxMult(P(), 'super') + '倍', 'super');
+  const risk = atRisk(bets);
+  $('risk').innerHTML = `<span>リザーブ込み最大損失 <b>${yen(risk)}</b></span><span>卓ミニマム EVEN <b>${yen(S.tableMin)}</b></span>`;
+  $('chips').innerHTML = phase === 'bet' ? CHIPS.map(v => `<button type="button" class="chip c${v}" data-chip="${v}" aria-pressed="${chip === v}">${v >= 1000 ? v / 1000 + 'K' : v}</button>`).join('') : '';
+  // actions
+  let a = '';
+  if (phase === 'bet') a = `<button type="button" class="btn" data-act="clear">クリア</button><button type="button" class="btn" data-act="rebet">前回と同じ</button><button type="button" class="btn primary" data-act="deal">ディール</button>`;
+  else if (phase === 'set') a = `<button type="button" class="btn" data-act="noniu">ノーニウ</button><button type="button" class="btn primary" data-act="claim" ${R.sel.length === 3 ? '' : 'disabled'}>この3枚で組む</button>`;
+  else if (phase === 'quiz') a = '';
+  else a = `<button type="button" class="btn primary" data-act="next">次のハンド</button>`;
+  $('actions').innerHTML = a;
+  $('feltPay').innerHTML = payTableHTML(R && phase === 'done' ? R.myE.level : -1);
+  renderTableStats();
+  if (R) R.fresh = false;
+}
+function stackHTML(amt) {
+  if (!amt) return ''; const out = []; let r = amt;
+  for (const v of [5000, 1000, 500, 100]) while (r >= v && out.length < 8) { out.push(v); r -= v; }
+  return `<span class="stack">${out.map(v => `<i style="background:${CHIP_COLOR[v]}"></i>`).join('')}</span>`;
+}
+function renderSumline() {
+  const el = $('sumline'); const c = R.hands[ME];
+  if (phase === 'set') {
+    const t = (performance.now() - R.t0) / 1000;
+    if (R.sel.length === 0) el.innerHTML = `<span>10の倍数になる3枚をタップ（J・Q・K＝10）</span><span class="timer">${t.toFixed(1)}s</span>`;
+    else { const s = R.sel.reduce((a, i) => a + NN.val(c[i]), 0); const ok = R.sel.length === 3 && s % 10 === 0;
+      el.innerHTML = `<span>選択 ${R.sel.length}/3 · 合計 <b class="num">${s}</b> ${R.sel.length === 3 ? (ok ? '<span class="ok">10の倍数</span>' : '<span class="ng">10の倍数ではない</span>') : ''}</span><span class="timer">${t.toFixed(1)}s</span>`; }
+  } else if (R.claimFb) el.innerHTML = R.claimFb;
+}
+let tick = null;
+function startTick() { clearInterval(tick); tick = setInterval(() => { if (phase === 'set' && document.visibilityState === 'visible') renderSumline(); else if (phase !== 'set') clearInterval(tick); }, 100); }
+
+function renderTableStats() {
+  const s = S.st;
+  $('tableStats').innerHTML = `<div class="stat"><div class="l">ハンド / 勝率</div><div class="v">${s.hands}·${s.hands ? Math.round(s.wins / s.hands * 100) : 0}%</div></div>` +
+    `<div class="stat"><div class="l">通算収支</div><div class="v ${s.net >= 0 ? '' : ''}">${sgn(s.net)}</div></div>` +
+    `<div class="stat"><div class="l">組み正答 / 平均</div><div class="v">${s.setN ? Math.round(s.setOk / s.setN * 100) : 0}%·${s.setN ? (s.setT / s.setN).toFixed(1) : '0.0'}s</div></div>`;
+}
+function setMsg(t, err) { const m = $('msg'); m.textContent = t || ''; m.classList.toggle('err', !!err); }
+
+function onDeal() {
+  if (bets.even < S.tableMin) return setMsg(`EVENは卓ミニマム ${yen(S.tableMin)} 以上が必要`, true);
+  if (bets.double > bets.even || bets.super > bets.even) return setMsg('DOUBLE・SUPERはEVEN以下の額まで', true);
+  if (atRisk(bets) > S.bank) return setMsg(`リザーブ込みで ${yen(atRisk(bets))} 必要。資金が足りない`, true);
+  S.lastBets = { ...bets }; save();
+  newRound(); R.fresh = true; phase = 'set'; setMsg(''); $('result').innerHTML = '';
+  renderTable(); startTick();
+}
+function onClaim(noniu) {
+  const t = (performance.now() - R.t0) / 1000; clearInterval(tick);
+  const e = R.myE; const c = R.hands[ME];
+  let ok, fb;
+  if (noniu) {
+    ok = e.level === 12 || !e.triples.length;
+    fb = ok ? `<span class="ok">正解：ニウは作れない</span>` : `<span class="ng">ニウがあった</span>`;
+  } else {
+    const s = R.sel.reduce((a, i) => a + NN.val(c[i]), 0);
+    ok = s % 10 === 0;
+    fb = ok ? `<span class="ok">正しく組めた</span>` : `<span class="ng">その3枚は合計${s}で10の倍数ではない</span>`;
+  }
+  R.shown = e.triples.length ? (ok && !noniu ? R.sel : e.triples[0]) : null;
+  if (!ok) fb += ' · 最強形で判定';
+  R.claimFb = `<span>${fb}</span><span class="timer">${t.toFixed(1)}s</span>`;
+  S.st.setN++; if (ok) S.st.setOk++; S.st.setT += t;
+  const res = NN.settle(bets, R.myE, R.dealerE, P());
+  R.res = res;
+  if (S.quiz) { phase = 'quiz'; renderTable(); renderQuiz(res); }
+  else finish();
+}
+function finish() {
+  phase = 'done';
+  const res = R.res; S.bank += res.net; S.st.hands++; if (res.playerWins) S.st.wins++; S.st.net += res.net; save();
+  renderTable(); renderResult(res);
+}
+function lineWhy(l) {
+  const lv = NN.levelName(l.basis);
+  if (l.win) {
+    let s = `あなたの${lv} → ${l.mult === 0.5 ? '半額' : l.mult + ':1'}`;
+    if (l.tax) s += `（${yen(l.gross)} − 5% ${yen(l.tax)}）`;
+    return s;
+  }
+  return l.kind === 'even' ? '負け → 賭け金を失う' : `ディーラーの${lv} → ×${l.mult}を支払い`;
+}
+function resultHTML(res, me, de, quizBlock = '') {
+  return `<div class="sheet"><h3><span>${res.playerWins ? 'あなたの勝ち' : 'ディーラーの勝ち'}</span><span class="num ${res.net >= 0 ? 'pos' : 'neg'}">${sgn(res.net)}</span></h3>` +
+    `<div class="fb">あなた <b>${NN.levelName(me.level)}</b>（最高札 ${NN.RANK_TXT[me.high.r]}${NN.SUIT_SYM[me.high.s]}） vs ディーラー <b>${NN.levelName(de.level)}</b>（最高札 ${NN.RANK_TXT[de.high.r]}${NN.SUIT_SYM[de.high.s]}）${me.level === de.level ? '<br>同じ役 → 最高札のランク、同ランクならスート（♠>♥>♣>♦）で決着' : ''}</div>` + quizBlock +
+    res.lines.map(l => `<div class="row"><span class="k">${l.label}</span><span class="why">${yen(l.wager)} · ${lineWhy(l)}</span><span class="n ${l.net >= 0 ? 'pos' : 'neg'}">${sgn(l.net)}</span></div>`).join('') +
+    `<div class="tot"><span>合計</span><span class="num ${res.net >= 0 ? 'pos' : 'neg'}">${sgn(res.net)}</span></div></div>`;
+}
+function renderResult(res) { $('result').innerHTML = resultHTML(res, R.myE, R.dealerE); }
+
+// distractors for pay quiz
+function distractors(bets, me, de, p, correct) {
+  const alt = [];
+  const variants = [
+    { evenWin: l => 1 },                                  // forget Niu6 half
+    { doubleTax: () => false, superTax: () => false },   // forget tax
+    { doubleTax: () => true, superTax: () => true },     // tax everything
+  ];
+  for (const v of variants) alt.push(NN.settle(bets, me, de, Object.assign({}, p, v)).net);
+  // wrong basis on loss: use 1x for double/super
+  alt.push(NN.settle(bets, me, de, Object.assign({}, p, { double: l => 1, super: l => 1 })).net);
+  // swap: dealer's mult on win / player's on loss
+  alt.push(NN.settle(bets, de, me, p).net * -1);
+  const out = [...new Set(alt.map(x => Math.round(x * 100) / 100))].filter(x => x !== correct);
+  const step = Math.max(50, Math.round(Math.abs(correct) * 0.05 / 50) * 50 || 50);
+  let k = 1; while (out.length < 3) { const c = correct + (k % 2 ? 1 : -1) * step * Math.ceil(k / 2); if (!out.includes(c) && c !== correct) out.push(c); k++; }
+  const pick = NN.shuffle(out).slice(0, 3); pick.push(correct); return NN.shuffle(pick);
+}
+function renderQuiz(res) {
+  const opts = distractors(bets, R.myE, R.dealerE, P(), Math.round(res.net * 100) / 100);
+  $('result').innerHTML = `<div class="sheet"><h3><span>${res.playerWins ? 'あなたの勝ち' : 'ディーラーの勝ち'}</span><span>精算額は？</span></h3>` +
+    `<div class="fb">あなた <b>${NN.levelName(R.myE.level)}</b> vs ディーラー <b>${NN.levelName(R.dealerE.level)}</b><br>ベット：EVEN ${yen(bets.even)}${bets.double ? ' / DOUBLE ' + yen(bets.double) : ''}${bets.super ? ' / SUPER ' + yen(bets.super) : ''}</div>` +
+    `<div class="qopts">${opts.map(o => `<button type="button" data-q="${o}">${sgn(o)}</button>`).join('')}</div></div>`;
+  phase = 'quiz'; renderTable();
+  // dealer cards must be visible for quiz: temporarily show
+  $('dealerHand').innerHTML = R.hands[0].map(c => cardHTML(c, { hint: S.hint })).join('');
+  $('dealerLvl').innerHTML = `<span class="lvl big">${lvlTxt(R.dealerE)}</span>`;
+}
+
+$('view-table').addEventListener('click', ev => {
+  const t = ev.target.closest('button'); if (!t) return;
+  if (t.dataset.chip) { chip = +t.dataset.chip; renderTable(); return; }
+  if (t.dataset.spot && phase === 'bet') { const k = t.dataset.spot; bets[k] += chip; setMsg(''); renderTable(); return; }
+  if (t.dataset.i !== undefined && phase === 'set') { const i = +t.dataset.i; const at = R.sel.indexOf(i); if (at >= 0) R.sel.splice(at, 1); else if (R.sel.length < 3) R.sel.push(i); renderTable(); return; }
+  if (t.dataset.q !== undefined && phase === 'quiz') {
+    const v = +t.dataset.q, c = Math.round(R.res.net * 100) / 100;
+    const ok = Math.abs(v - c) < 0.01;
+    S.ps.n++; if (ok) { S.ps.ok++; S.ps.streak++; } else S.ps.streak = 0;
+    finish();
+    $('result').insertAdjacentHTML('afterbegin', `<div class="msg" style="color:${ok ? 'var(--win)' : 'var(--lose)'}">${ok ? '精算額：正解' : '精算額：不正解（あなたの回答 ' + sgn(v) + '）'}</div>`);
+    return;
+  }
+  const act = t.dataset.act;
+  if (act === 'clear') { bets = { even: 0, double: 0, super: 0 }; renderTable(); }
+  else if (act === 'rebet') { bets = { ...S.lastBets }; renderTable(); }
+  else if (act === 'deal') onDeal();
+  else if (act === 'claim') onClaim(false);
+  else if (act === 'noniu') onClaim(true);
+  else if (act === 'next') { phase = 'bet'; R = null; bets = { ...S.lastBets }; $('result').innerHTML = ''; renderTable(); }
+});
+$('optHint').addEventListener('change', e => { S.hint = e.target.checked; save(); renderTable(); });
+$('optQuiz').addEventListener('change', e => { S.quiz = e.target.checked; save(); });
+
+// ---------- SET DRILL ----------
+let D = null;
+function newDrill() { const d = NN.shuffle(NN.deck()).slice(0, 5); D = { c: d, e: NN.evaluate(d), sel: [], t0: performance.now(), done: false }; renderDrill(); }
+function renderDrill() {
+  $('dHand').innerHTML = D.c.map((c, i) => cardHTML(c, { btn: !D.done, i, sel: !D.done && D.sel.includes(i), hint: false, mark: D.done && D.show && D.show.includes(i), dim: D.done && D.show && !D.show.includes(i) })).join('');
+  if (!D.done) {
+    const s = D.sel.reduce((a, i) => a + NN.val(D.c[i]), 0);
+    $('dSum').innerHTML = D.sel.length ? `<span>選択 ${D.sel.length}/3 · 合計 <b class="num">${s}</b></span>` : '<span>3枚をタップ、または「ノーニウ」</span>';
+    $('dActions').innerHTML = `<button type="button" class="btn" data-d="noniu">ノーニウ</button><button type="button" class="btn primary" data-d="claim" ${D.sel.length === 3 ? '' : 'disabled'}>この3枚で組む</button>`;
+    $('dFb').innerHTML = '';
+  } else {
+    $('dSum').innerHTML = '';
+    $('dActions').innerHTML = `<button type="button" class="btn primary" data-d="next">次の問題</button>`;
+  }
+  const s = S.ds;
+  $('dStats').innerHTML = `<div class="stat"><div class="l">正答率</div><div class="v">${s.n ? Math.round(s.ok / s.n * 100) : 0}%</div></div><div class="stat"><div class="l">平均時間</div><div class="v">${s.n ? (s.t / s.n).toFixed(1) : '0.0'}s</div></div><div class="stat"><div class="l">連続正解 / 最高</div><div class="v">${s.streak} / ${s.best}</div></div>`;
+}
+function drillAnswer(noniu) {
+  const t = (performance.now() - D.t0) / 1000; const e = D.e;
+  const s = D.sel.reduce((a, i) => a + NN.val(D.c[i]), 0);
+  const ok = noniu ? !e.triples.length : (s % 10 === 0);
+  D.done = true; D.show = e.triples.length ? (ok && !noniu ? D.sel : e.triples[0]) : null;
+  S.ds.n++; S.ds.t += t; if (ok) { S.ds.ok++; S.ds.streak++; S.ds.best = Math.max(S.ds.best, S.ds.streak); } else S.ds.streak = 0; save();
+  const total = e.total;
+  const allT = e.triples.map(tr => tr.map(i => NN.RANK_TXT[D.c[i].r]).join('+')).filter((v, i, a) => a.indexOf(v) === i);
+  let body = `<b style="color:${ok ? 'var(--win)' : 'var(--lose)'}">${ok ? '正解' : '不正解'}</b> <span class="timer">${t.toFixed(1)}s</span><br>`;
+  if (e.level === 12) body += `フォーカード（最強役）。`;
+  if (e.triples.length) body += `答え：<b>${NN.levelName(e.level)}</b>。5枚合計 ${total} → 下一桁 ${total % 10}${total % 10 === 0 ? '（＝ニウニウ）' : ''}。<br>作れる3枚：${allT.join(' / ')}`;
+  else body += `答え：<b>ノーニウ</b>。どの3枚も10の倍数にならない。最高札 ${NN.RANK_TXT[e.high.r]}${NN.SUIT_SYM[e.high.s]} で勝負。`;
+  renderDrill();
+  $('dFb').innerHTML = `<div class="callout" style="margin-top:12px">${body}</div>`;
+}
+$('view-set').addEventListener('click', ev => {
+  const t = ev.target.closest('button'); if (!t) return;
+  if (t.dataset.i !== undefined && !D.done) { const i = +t.dataset.i; const at = D.sel.indexOf(i); if (at >= 0) D.sel.splice(at, 1); else if (D.sel.length < 3) D.sel.push(i); renderDrill(); return; }
+  if (t.dataset.d === 'claim') drillAnswer(false); else if (t.dataset.d === 'noniu') drillAnswer(true); else if (t.dataset.d === 'next') newDrill();
+});
+setInterval(() => { if (D && !D.done && !$('view-set').hidden) $('dTimer').textContent = ((performance.now() - D.t0) / 1000).toFixed(1) + 's'; }, 100);
+
+// ---------- PAY DRILL ----------
+let Q = null;
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function newPay() {
+  let me, de, pc, dc;
+  // bias toward interesting cases: Niu 6 wins, high hands, losses to strong dealer
+  for (let tries = 0; tries < 50; tries++) {
+    const d = NN.shuffle(NN.deck()); pc = d.slice(0, 5); dc = d.slice(5, 10);
+    me = NN.evaluate(pc); de = NN.evaluate(dc);
+    if (Math.random() < 0.5 || me.level >= 6 || de.level >= 6) break;
+  }
+  const even = pick([500, 1000, 2000, 3000, 5000]);
+  const b = { even, double: Math.random() < 0.55 ? pick([500, 1000, even].filter(x => x <= even)) : 0, super: Math.random() < 0.55 ? pick([500, 1000, even].filter(x => x <= even)) : 0 };
+  const res = NN.settle(b, me, de, P());
+  const correct = Math.round(res.net * 100) / 100;
+  Q = { b, me, de, pc, dc, res, correct, opts: distractors(b, me, de, P(), correct), ans: null };
+  renderPay();
+}
+function renderPay() {
+  const { b, me, de, pc, dc, res, ans } = Q;
+  const handBlock = (lbl, cards, e) => `<div class="zone-title" style="margin-top:8px"><b>${lbl}</b><span class="lvl">${NN.levelName(e.level)}</span></div><div class="hand small" style="margin-top:6px">${cards.map(c => cardHTML(c, { mark: e.level <= 10 && e.triples[0] && e.triples[0].includes(cards.indexOf(c)) })).join('')}</div>`;
+  let html = `<div class="felt" style="border-radius:18px">${handBlock('DEALER', dc, de)}${handBlock('YOU', pc, me)}` +
+    `<div class="risk" style="margin-top:12px"><span>EVEN <b>${yen(b.even)}</b></span><span>DOUBLE <b>${b.double ? yen(b.double) : '—'}</b></span><span>SUPER <b>${b.super ? yen(b.super) : '—'}</b></span></div></div>`;
+  html += `<div class="sheet"><h3><span>${res.playerWins ? 'あなたの勝ち' : 'ディーラーの勝ち'}</span><span>収支は？</span></h3><div class="qopts">` +
+    Q.opts.map(o => { let cls = ''; if (ans !== null) { if (Math.abs(o - Q.correct) < .01) cls = 'right'; else if (Math.abs(o - ans) < .01) cls = 'wrong'; } return `<button type="button" class="${cls}" data-p="${o}" ${ans !== null ? 'disabled' : ''}>${sgn(o)}</button>`; }).join('') + '</div>';
+  if (ans !== null) {
+    html += `<div style="margin-top:10px"></div>` + res.lines.map(l => `<div class="row"><span class="k">${l.label}</span><span class="why">${yen(l.wager)} · ${lineWhy(l)}</span><span class="n ${l.net >= 0 ? 'pos' : 'neg'}">${sgn(l.net)}</span></div>`).join('') +
+      `<div class="tot"><span>合計</span><span class="num ${res.net >= 0 ? 'pos' : 'neg'}">${sgn(res.net)}</span></div>` +
+      `<div class="actions"><button type="button" class="btn primary" data-p="next" style="color:#1c1a12">次の問題</button></div>`;
+  }
+  html += '</div>';
+  $('pQ').innerHTML = html;
+  const s = S.ps;
+  $('pStats').innerHTML = `<div class="stat"><div class="l">回答数</div><div class="v">${s.n}</div></div><div class="stat"><div class="l">正答率</div><div class="v">${s.n ? Math.round(s.ok / s.n * 100) : 0}%</div></div><div class="stat"><div class="l">連続正解</div><div class="v">${s.streak}</div></div>`;
+}
+$('view-pay').addEventListener('click', ev => {
+  const t = ev.target.closest('button'); if (!t || t.dataset.p === undefined) return;
+  if (t.dataset.p === 'next') return newPay();
+  if (Q.ans !== null) return;
+  Q.ans = +t.dataset.p; const ok = Math.abs(Q.ans - Q.correct) < .01;
+  S.ps.n++; if (ok) { S.ps.ok++; S.ps.streak++; } else S.ps.streak = 0; save(); renderPay();
+});
+
+// ---------- RULES ----------
+function renderRules() {
+  const p = P(); const md = NN.maxMult(p, 'double'), ms = NN.maxMult(p, 'super');
+  $('rulesBody').innerHTML = `
+  <h2>結論：EVENだけ打つ。SUPERは控除率が約14%</h2>
+  <div class="callout">EVENの控除率は約2.3%。その大半は「ニウ6で勝つと半額」の1ルールから来ている。DOUBLEは約2.9%でEVENとほぼ同水準だが、負けると最大${md}倍取られるので振れ幅が大きい。SUPERは約14〜15%で、バカラのタイ並みに不利。</div>
+  <p class="note">数値は本アプリのロジックで300万ハンドを試算した値（City of Dreams Manila公表値：EVEN 2.25% / DOUBLE 2.7% / SUPER 14.04% と整合）。DOUBLE・SUPERの控除率はその賭け金1単位あたり。</p>
+
+  <h2>1ハンドの流れ</h2>
+  <ol class="flow">
+    <li>全員がEVENにベット。任意でDOUBLE・SUPERを追加（どちらもEVEN以下の額。負けに備えたリザーブ＝保証金を一緒に置く）。</li>
+    <li>ディーラーがサイコロを振り、出目で最初にカードを受け取るボックスが決まる。</li>
+    <li>各ボックスとディーラーに5枚ずつ裏向きで配る（1デッキ52枚）。</li>
+    <li>合図が出たら自分のカードを見て、3枚＋2枚に組む。</li>
+    <li>ディーラーが自分の手を開けて組み、右側のボックスから順に1人ずつ比べて精算。相手はディーラーだけで、他の客とは勝負しない。</li>
+  </ol>
+
+  <h2>役の作り方</h2>
+  <p>A＝1、2〜10＝数字どおり、J・Q・K＝10。5枚のうち<strong>3枚の合計が10の倍数</strong>（10・20・30）になれば「ニウ」成立。残り2枚の合計の下一桁が点数で、0ならニウニウ。3枚が作れなければノーニウ（いちばん弱い）。</p>
+  <div class="callout">早く読むコツ：ニウが作れる限り、点数は<strong>5枚全部の合計の下一桁</strong>と同じになる。どの3枚を選んでも点数は変わらないので、考えるのは「10の倍数の3枚があるかどうか」だけ。絵札・10は0として数えると速い。</div>
+
+  <h2>役の強さと同点の決め方</h2>
+  <p>フォーカード ＞ ニウニウ ＞ ニウ9 ＞ … ＞ ニウ1 ＞ ノーニウ。同じ役なら5枚の中の<strong>最高札</strong>で比べる（K＞Q＞J＞10＞…＞2＞A）。ランクも同じならスートで決める（♠＞♥＞♣＞♦）。1デッキなので引き分けは起きない。</p>
+
+  <h2>配当表（${p.name}）</h2>
+  ${payTableHTML(-1)}
+  <div class="callout warn">負けのルールに注意：EVENは賭け金だけ失うが、DOUBLE・SUPERは<strong>ディーラーの役の倍率</strong>で払う。ディーラーがニウニウならSUPERは10倍取られる。だからリザーブ（DOUBLEは賭け金の${md - 1}倍、SUPERは${ms - 1}倍）を先に預ける。</div>
+
+  <h2>オカダマニラについて</h2>
+  <p>オカダの公式サイトには「Super Niu Niu Plus」として、他の客かディーラーの手が「3 Picture」になるかに賭けるサイドベット（最大150倍、₱100から）が載っている。このサイドベットの配当表は公開されていないので、本アプリには入れていない。基本の配当もカジノごとに少しずつ違う（例：SolaireはフォーカードのDOUBLEが5倍）。席に着く前に卓上の配当表で、ニウ6のEVENが半額か、DOUBLE・SUPERのタックス対象、卓ミニマムを確認すること。</p>
+
+  <h2>卓の設定</h2>
+  <div class="form">
+    <label for="setPreset">配当ルール<select id="setPreset">${Object.entries(NN.PRESETS).map(([k, v]) => `<option value="${k}" ${k === S.preset ? 'selected' : ''}>${v.name}</option>`).join('')}</select></label>
+    <label for="setMin">卓ミニマム（EVEN）<select id="setMin">${[300, 500, 1000, 2000].map(v => `<option value="${v}" ${v === S.tableMin ? 'selected' : ''}>${yen(v)}</option>`).join('')}</select></label>
+    <div class="actions" style="margin-top:0"><button type="button" class="btn" id="resetBank">資金を${yen(START_BANK)}に戻す</button><button type="button" class="btn" id="resetStats">成績をリセット</button></div>
+    <div class="msg" id="setMsg"></div>
+  </div>
+
+  <h2>出典</h2>
+  <ul class="note src">
+    <li><a href="https://www.cityofdreamsmanila.com/sites/g/files/cityofdreamsmanila/files/2022-01/TableGames_GamingGuide_Super%20Niu%20Niu.pdf" target="_blank" rel="noopener">City of Dreams Manila · Super Niu Niu Rules and Guidelines</a></li>
+    <li><a href="https://sec.solaireresort.com/gaming/solaire-niu-niu" target="_blank" rel="noopener">Solaire · Niu Niu</a></li>
+    <li><a href="https://www.hoiana.com/table-games/hoiana-niu-niu" target="_blank" rel="noopener">Hoiana · Niu Niu（同点処理・リザーブ表）</a></li>
+    <li><a href="https://okadamanila.com/casino-game/super-niu-niu-plus/" target="_blank" rel="noopener">Okada Manila · Super Niu Niu Plus</a></li>
+    <li><a href="https://wizardofodds.com/games/niu-niu/" target="_blank" rel="noopener">Wizard of Odds · Niu Niu</a></li>
+  </ul>`;
+  $('setPreset').onchange = e => { S.preset = e.target.value; save(); renderRules(); if (phase === 'bet') renderTable(); };
+  $('setMin').onchange = e => { S.tableMin = +e.target.value; save(); renderTable(); };
+  $('resetBank').onclick = () => { if (phase !== 'bet') { $('setMsg').textContent = 'ハンドの途中はリセットできない'; return; } S.bank = START_BANK; save(); renderTable(); $('setMsg').textContent = '資金を戻した'; };
+  $('resetStats').onclick = () => { S.st = structuredClone(DEF.st); S.ds = structuredClone(DEF.ds); S.ps = structuredClone(DEF.ps); save(); renderTable(); $('setMsg').textContent = '成績をリセットした'; };
+}
+
+// ---------- TUTORIAL ----------
+const SU = { '♠': 0, '♥': 1, '♣': 2, '♦': 3 };
+const RK = { A: 1, J: 11, Q: 12, K: 13 };
+const H = str => str.split(' ').map(t => { const s = t.slice(-1), r = t.slice(0, -1); return { r: RK[r] || +r, s: SU[s] }; });
+const L = { i: 0, sel: [], solved: {}, ans: {} };
+const handRow = (cards, o = {}) => `<div class="hand" style="margin-top:8px">${cards.map((c, i) => cardHTML(c, { btn: o.btn, i, sel: o.sel && o.sel.includes(i), hint: o.hint, mark: o.mark && o.mark.includes(i), dim: o.dim && !o.dim.includes(i) })).join('')}</div>`;
+const choice = (key, opts, correct) => {
+  const a = L.ans[key];
+  return `<div class="qopts lq">${opts.map(o => { let cls = ''; if (a !== undefined) { if (o === correct) cls = 'right'; else if (o === a) cls = 'wrong'; } return `<button type="button" class="${cls}" data-lq="${key}" data-v="${o}" ${a !== undefined ? 'disabled' : ''}>${o}</button>`; }).join('')}</div>`;
+};
+const STEPS = [
+  { t: 'ディーラーとの1対1の勝負', gate: false, body: () => `
+    <p>Super Niu Niu は、あなたとディーラーが5枚ずつカードを受け取り、役の強さを比べるゲーム。同じ卓に他の客がいても、勝負する相手はディーラーだけ。</p>
+    <p>5枚を<strong>3枚と2枚</strong>に分けるのが基本の動き。3枚で「土台」を作れたら、残り2枚で点数が決まる。</p>
+    <div class="callout">このチュートリアルは11ステップ、5分ほど。実際に手を組んだり精算したりしながら進む。</div>` },
+  { t: 'カードの数え方', gate: false, body: () => `
+    <p>A は1、2〜10は数字どおり、<strong>J・Q・K は10</strong>。カード右下の小さな数字がそのカードの値。</p>
+    ${handRow(H('A♠ 7♥ 10♣ J♦ K♠'), { hint: true })}
+    <div class="callout">このゲームでは下一桁しか使わないので、10・J・Q・K は「0」と思って数えると速い。</div>` },
+  { t: '3枚で10の倍数を作る', gate: 'make', body: () => {
+    const c = H('K♠ 7♥ 3♣ 5♦ 4♠'); const done = L.solved.make;
+    const s = L.sel.reduce((a, i) => a + NN.val(c[i]), 0);
+    return `<p>3枚の合計が <strong>10・20・30</strong> のどれかになると「ニウ（牛）」が成立する。下の5枚から、そういう3枚をタップして選ぼう。</p>
+    ${done ? handRow(c, { mark: [0, 1, 2] }) : handRow(c, { btn: true, sel: L.sel })}
+    <div class="sumline" style="margin-top:12px">${done ? '<span class="ok">K＋7＋3＝20。ニウ成立</span>' : L.sel.length ? `<span>選択 ${L.sel.length}/3 · 合計 <b class="num">${s}</b>${L.sel.length === 3 ? (s % 10 === 0 ? '' : ' <span class="ng">10の倍数ではない。選び直そう</span>') : ''}</span>` : '<span>ヒント：7と3で10になる</span>'}</div>
+    ${done ? `<div class="callout">残った 5 と 4 の合計は9。だからこの手は<strong>ニウ9</strong>。2枚の合計が10を超えたら下一桁だけ使う（8＋7＝15ならニウ5）。下一桁が0なら最強クラスの<strong>ニウニウ</strong>。</div>` : `<div class="actions"><button type="button" class="btn" data-lx="reveal">答えを見る</button></div>`}`;
+  } },
+  { t: '点数は5枚合計の下一桁', gate: 'read', body: () => `
+    <p>さっきの手を見直すと、5枚の合計は 10＋7＋3＋5＋4＝29。下一桁の9が、そのまま点数のニウ9と一致している。</p>
+    <p>3枚の部分が10の倍数なので、残り2枚の下一桁は必ず5枚合計の下一桁と同じになる。どの3枚を選んでも点数は変わらない。だから実戦で考えるのは「<strong>10の倍数の3枚があるかどうか</strong>」だけでいい。</p>
+    <p style="margin-top:14px"><b>練習：</b>この手は何？</p>
+    ${handRow(H('Q♦ 6♣ 4♥ 8♠ 9♦'), L.ans.read !== undefined ? { mark: [0, 1, 2] } : {})}
+    ${choice('read', ['ノーニウ', 'ニウ7', 'ニウ8', 'ニウ9'], 'ニウ7')}
+    ${L.ans.read !== undefined ? `<div class="callout">Q＋6＋4＝20でニウ成立。5枚合計は0＋6＋4＋8＋9＝27、下一桁は7。答えは<strong>ニウ7</strong>。</div>` : ''}` },
+  { t: '作れないときはノーニウ', gate: 'noniu', body: () => `
+    <p>どの3枚を選んでも10の倍数にならない手は「ノーニウ」で、いちばん弱い。実際の手の約3分の1がノーニウになる。</p>
+    <p style="margin-top:14px"><b>練習：</b>この手でニウは作れる？</p>
+    ${handRow(H('K♠ Q♥ 3♣ 4♦ 2♠'))}
+    ${choice('noniu', ['作れる', 'ノーニウ'], 'ノーニウ')}
+    ${L.ans.noniu !== undefined ? `<div class="callout">K と Q は0扱い。0＋0＋3・0＋0＋4・0＋0＋2 はどれも10の倍数にならない。3＋4＋2＝9 もだめ。正解は<strong>ノーニウ</strong>。この場合は最高札（K♠）の強さで勝負する。</div>` : ''}` },
+  { t: '役の強さと同点のとき', gate: false, body: () => `
+    <div class="ladder">${[12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map(l => `<span>${NN.levelName(l)}</span>`).join('<i>＞</i>')}</div>
+    <p>フォーカード（同じ数字4枚）は特別な最強役。その下にニウニウ、ニウ9〜ニウ1、ノーニウと続く。</p>
+    <p>同じ役なら、5枚の中の<strong>いちばん強い1枚</strong>で比べる。K＞Q＞J＞10＞…＞2＞A の順。それも同じなら、スートで決める（♠＞♥＞♣＞♦）。カードは1デッキだけなので、引き分けは起きない。</p>
+    <div class="callout">例：あなたのニウ8（最高札 K♥）とディーラーのニウ8（最高札 K♠）なら、♠が強いのでディーラーの勝ち。</div>` },
+  { t: '3つのベット', gate: false, body: () => `
+    <div class="tbl-wrap"><table class="pay"><thead><tr><th>ベット</th><th>勝ったとき</th><th>負けたとき</th></tr></thead><tbody>
+      <tr><td>EVEN（必須）</td><td>1倍</td><td>賭け金だけ</td></tr>
+      <tr><td>DOUBLE（任意）</td><td>自分の役で1〜3倍</td><td>ディーラーの役で1〜3倍</td></tr>
+      <tr><td>SUPER（任意）</td><td>自分の役で1〜11倍</td><td>ディーラーの役で1〜11倍</td></tr>
+    </tbody></table></div>
+    <p>EVENは誰でも必ず置く基本のベット。勝てば同額もらえ、負ければ賭け金を失うだけ。</p>
+    <p>DOUBLEとSUPERは「役が強いほど倍率が上がる」追加ベット。EVEN以下の額で置ける。ニウ9で勝てばSUPERは9倍、ニウニウなら10倍。</p>` },
+  { t: '負けたときの払いに注意', gate: false, body: () => `
+    <p>DOUBLEとSUPERで負けると、<strong>ディーラーの役の倍率</strong>で払う。賭け金以上に取られることがある。</p>
+    <div class="sheet" style="margin-top:10px"><h3><span>例：ディーラーがニウニウ</span><span class="neg num">−₱14,000</span></h3>
+      <div class="row"><span class="k">EVEN</span><span class="why">₱1,000 · 賭け金を失う</span><span class="n neg">−₱1,000</span></div>
+      <div class="row"><span class="k">DOUBLE</span><span class="why">₱1,000 · ニウニウ ×3</span><span class="n neg">−₱3,000</span></div>
+      <div class="row"><span class="k">SUPER</span><span class="why">₱1,000 · ニウニウ ×10</span><span class="n neg">−₱10,000</span></div></div>
+    <p style="margin-top:12px">このためDOUBLEやSUPERを置くときは、最悪の負けに備えた<strong>リザーブ（保証金）</strong>を賭け金と一緒に預ける。DOUBLEは賭け金の2倍、SUPERは10倍が目安。3つとも₱1,000ずつ置くなら、賭け金とリザーブを合わせて₱15,000を卓に出す（ディーラーがフォーカードのときの最大損失）。</p>` },
+  { t: '勝ったときの精算', gate: 'pay', body: () => `
+    <p>勝ちの精算には2つの例外がある。</p>
+    <ul class="flow"><li><strong>ニウ6で勝つと、EVENは半額</strong>（₱1,000なら＋₱500）。カジノの取り分はほぼこのルールから来ている。</li>
+    <li>DOUBLE・SUPERで倍率2倍以上の勝ちには<strong>5%のタックス</strong>がかかる（DOUBLE ₱1,000がニウ8で勝つと ₱2,000 − ₱100 ＝ ＋₱1,900）。</li></ul>
+    <p style="margin-top:14px"><b>練習：</b>あなたがニウ6で勝った。ベットは EVEN ₱1,000 と DOUBLE ₱1,000。収支は？</p>
+    ${choice('pay', ['+₱1,000', '+₱1,450', '+₱1,500', '+₱2,000'], '+₱1,500')}
+    ${L.ans.pay !== undefined ? `<div class="callout">EVENはニウ6なので半額で＋₱500。DOUBLEはニウ6だと1:1で、タックスなしの＋₱1,000。合計<strong>＋₱1,500</strong>。</div>` : ''}` },
+  { t: '実際の卓での流れ', gate: false, body: () => `
+    <ol class="flow">
+      <li>チップをEVENに置く。DOUBLE・SUPERを置くならリザーブも一緒に置く。</li>
+      <li>ディーラーがサイコロを振り、最初にカードを受け取る席が決まる。</li>
+      <li>5枚が裏向きで配られる。<strong>ディーラーの合図があるまでカードに触らない。</strong></li>
+      <li>合図が出たらカードを見て、3枚と2枚に分けて置く。</li>
+      <li>ディーラーが自分の手を開けて組み、右側の席から1人ずつ比べて精算する。</li>
+    </ol>
+    <div class="callout warn">座る前に卓上の配当表を見て、ニウ6のEVENが半額か、タックスがかかる役はどれか、最低ベット額はいくらかを確認する。カジノごとに細かく違う。</div>` },
+  { t: '準備完了', gate: false, body: () => `
+    <p>覚えることは3つ。</p>
+    <ol class="flow"><li>10の倍数の3枚を探す。あれば点数は5枚合計の下一桁。</li>
+    <li>DOUBLE・SUPERは負けるとディーラーの役の倍率で払う。</li>
+    <li>ニウ6のEVENは半額、2倍以上の勝ちには5%タックス。</li></ol>
+    <div class="callout">賭け方はEVENだけがおすすめ。カジノの取り分はEVENが約2.3%、SUPERは約14%と大きく違う。</div>
+    <div class="actions"><button type="button" class="btn" data-lx="go-set">役作りドリルへ</button><button type="button" class="btn primary" data-lx="go-table">卓で練習する</button></div>` },
+];
+function renderLearn() {
+  const st = STEPS[L.i]; const n = STEPS.length;
+  const locked = st.gate && !L.solved[st.gate] && L.ans[st.gate] === undefined;
+  $('learnBody').innerHTML = `<div class="prog"><span style="width:${(L.i + 1) / n * 100}%"></span></div>
+    <div class="zone-title" style="margin-top:12px"><b>STEP ${L.i + 1} / ${n}</b><span>${locked ? 'やってみよう' : ''}</span></div>
+    <h2 style="margin-top:4px">${st.t}</h2>${st.body()}
+    <div class="actions learn-nav"><button type="button" class="btn" data-lx="prev" ${L.i === 0 ? 'disabled' : ''}>戻る</button>${L.i < n - 1 ? `<button type="button" class="btn primary" data-lx="next" ${locked ? 'disabled' : ''}>次へ</button>` : ''}</div>`;
+}
+$('view-learn').addEventListener('click', ev => {
+  const t = ev.target.closest('button'); if (!t) return;
+  if (t.dataset.i !== undefined && STEPS[L.i].gate === 'make' && !L.solved.make) {
+    const i = +t.dataset.i, at = L.sel.indexOf(i); if (at >= 0) L.sel.splice(at, 1); else if (L.sel.length < 3) L.sel.push(i);
+    const c = H('K♠ 7♥ 3♣ 5♦ 4♠');
+    if (L.sel.length === 3 && L.sel.reduce((a, k) => a + NN.val(c[k]), 0) % 10 === 0) L.solved.make = true;
+    return renderLearn();
+  }
+  if (t.dataset.lq) { L.ans[t.dataset.lq] = t.dataset.v; return renderLearn(); }
+  const a = t.dataset.lx;
+  if (a === 'reveal') { L.solved.make = true; renderLearn(); }
+  else if (a === 'next') { L.i = Math.min(STEPS.length - 1, L.i + 1); L.sel = []; if (L.i === STEPS.length - 1) { S.learned = true; save(); } renderLearn(); window.scrollTo({ top: 0 }); }
+  else if (a === 'prev') { L.i = Math.max(0, L.i - 1); L.sel = []; renderLearn(); window.scrollTo({ top: 0 }); }
+  else if (a === 'go-table') show('table');
+  else if (a === 'go-set') show('set');
+});
+
+// ---------- tabs ----------
+function show(tab) {
+  document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tab));
+  ['learn', 'table', 'set', 'pay', 'rules'].forEach(t => $('view-' + t).hidden = t !== tab);
+  if (tab === 'set' && !D) newDrill();
+  if (tab === 'pay' && !Q) newPay();
+  if (tab === 'pay' && Q) renderPay();
+  if (tab === 'rules') renderRules();
+  if (tab === 'learn') renderLearn();
+  window.scrollTo({ top: 0 });
+  try { localStorage.setItem('snn.tab', tab); } catch (e) {}
+}
+document.querySelector('nav.tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(b.dataset.tab); });
+
+// ---------- boot ----------
+$('optHint').checked = !!S.hint; $('optQuiz').checked = !!S.quiz;
+bets = { ...S.lastBets };
+renderTable();
+let first = S.learned ? 'table' : 'learn'; try { const h = location.hash.slice(1); first = ['learn', 'table', 'set', 'pay', 'rules'].includes(h) ? h : (S.learned ? (localStorage.getItem('snn.tab') || 'table') : 'learn'); } catch (e) {}
+show(first);
+})();
+</script>
+
+</body>
+</html>
